@@ -4,9 +4,10 @@ import pLimit from "https://esm.sh/p-limit@4.0.0";
 import { getAllQuestionList } from "./src/crawler.ts";
 import { getAnswer } from "./src/request.ts";
 import {
-  loadManifest,
+  appendToLastCache,
+  clearLastCache,
+  loadLastCache,
   saveAnswer,
-  saveManifest,
   saveQuestionList,
 } from "./src/save.ts";
 import { waitRandomMs } from "./src/shared/wait.ts";
@@ -15,8 +16,6 @@ const limit = pLimit(4);
 
 const newQuestions = await getAllQuestionList();
 const questions = getChangedQuestionList(newQuestions);
-
-saveManifest(newQuestions);
 saveQuestionList(questions);
 
 let all = questions.length, cursor = 0;
@@ -29,11 +28,12 @@ async function task(question: Question) {
   await waitRandomMs(1000, 5000);
   const answer = await getAnswer(question.exerciseKey);
   saveAnswer(answer, question);
+  appendToLastCache(question);
   console.log(++cursor, new Date());
 }
 
 function getChangedQuestionList(questions: Question[]) {
-  const oldQuestionMap = loadManifest();
+  const oldQuestionMap = loadLastCache();
   const newQuestions = questions;
 
   const changedQuestions: Question[] = [];
@@ -50,5 +50,6 @@ function getChangedQuestionList(questions: Question[]) {
     }
   });
 
+  clearLastCache();
   return changedQuestions;
 }

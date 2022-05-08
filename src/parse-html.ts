@@ -4,7 +4,6 @@ import { Question } from "./shared/types.ts";
 import { cheerio } from "https://deno.land/x/cheerio@1.0.4/mod.ts";
 import decode from "https://esm.sh/decode-html@2.0.0";
 
-
 export function parseQuestion2Html(html: string, questionMetadata: Question) {
   const question = questionMetadata;
 
@@ -23,7 +22,7 @@ export function parseQuestion2Html(html: string, questionMetadata: Question) {
     managePicture(content);
 
     // 代码片段
-    manageCode(content, $);
+    manageCode(content);
 
     // 推广二维码
     manageQRCode(content);
@@ -59,26 +58,8 @@ function managePicture(content: Cheerio) {
   content.find(".ant-image-mask").remove();
 }
 
-function manageCode(content: Cheerio, $: Root) {
-  const codeBoxes = content.find("pre > [class^=codeBox___]");
-
-  for (let i = 0; i < codeBoxes.length; i++) {
-    const box = codeBoxes.eq(i);
-    const code = box.find("code");
-    const codeLanguage = (code.attr("class")?.match(/language-(\S*)/) || [])[1];
-
-    // 移除行号
-    code.find("span.linenumber").remove();
-
-    const newCode = $("<div />");
-    newCode.text(getCodeText(codeLanguage, code.text()));
-
-    // 插入新的代码片段，移除原有代码片段
-    // 原有代码片段固定组合为 pre > [class^=codeBox___]
-    const pre = box.parent();
-    newCode.insertAfter(pre);
-    pre.remove();
-  }
+function manageCode(content: Cheerio) {
+  content.find("[class^=copyBtn___]").remove();
 }
 
 function manageQRCode(content: Cheerio) {
@@ -87,20 +68,4 @@ function manageQRCode(content: Cheerio) {
 
 function manageFooter(content: Cheerio) {
   content.find("[class^=footerBox___]").remove();
-}
-
-/**
- * 获取代码文本
- * @param codeLanguage 代码语言
- * @param rawText 代码内容
- * @returns markdown格式的代码文本
- */
-function getCodeText(codeLanguage: string, rawText: string) {
-  return String.raw`
-    
-${"```" + codeLanguage}
-${rawText}
-${"```"}
-
-`;
 }
