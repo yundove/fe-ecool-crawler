@@ -1,7 +1,7 @@
 # fe-ecool-crawler
 
 一个将 [前端面试题库](https://fe.ecool.fun/topic-list) 离线化保存的方案，基于
-[Deno](https://deno.land/) 【中文网站 [在这里](https://www.denojs.cn/)】
+[Deno](https://deno.land/)
 
 ## 如何运行
 
@@ -14,6 +14,11 @@ deno run --allow-net=fe.ecool.fun --allow-write --allow-read .\index.ts
 ```
 
 稍等一段时间，即可在 docs 目录下看到对应的离线网页
+
+## Roadmap
+
+- 优化文本解析
+- 展现界面样式和交互调整
 
 ## 参考文章
 
