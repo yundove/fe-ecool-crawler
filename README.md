@@ -17,6 +17,7 @@ deno run --allow-net=fe.ecool.fun --allow-write --allow-read .\index.ts
 
 ## Roadmap
 
+- 添加原始链接和版权声明
 - 优化文本解析
 - 展现界面样式和交互调整
 
